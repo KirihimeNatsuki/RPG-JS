@@ -13,18 +13,16 @@
     <main>
       <img src="img/youdied.gif" class="disabled" id="gameover">
       <div id="jeu">
-        <div id="combat">
+        <div class="combat">
+        </div>
+        <div class="container">
+          <div class="playerStats">
+          </div>
           <div class="ennemy">
-
           </div>
         </div>
         <div class="container">
-          <div id="playerStats">
-
-          </div>
-        </div>
-        <div class="container">
-          <div id="story">Text</div>
+          <div id="story"></div>
         </div>
         <div class="container">
             <div id="choices" class="btn-grid">
