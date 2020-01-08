@@ -6,17 +6,17 @@
     <script type="text/javascript" src="script.js"></script>
     <link rel="Stylesheet" href="style.css" type="text/css">
   </head>
-  <body>
+  <body id="deco">
     <header>
         <!-- <?php include('header.php');?> -->
     </header>
     <main>
       <img src="img/youdied.gif" class="disabled" id="gameover">
       <div id="jeu">
-        <div class="combat">
-        </div>
-        <div class="container">
+        <div class="macro">
           <div class="playerStats">
+          </div>
+          <div class="combat">
           </div>
           <div class="ennemy">
           </div>
