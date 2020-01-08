@@ -1029,13 +1029,13 @@ function  affichagePlayer() {
     if (sexe == "homme" || sexe == "Homme"){
       player = new Player(120, 32, "Unknown_M", 10, 100, 20, 1);
       getDivPlayer.innerHTML = '<img src="img/homme.png" class="player_avatar"><div><p class="health_player">Hp: '
-      + player.health + '</p><p>Stamina: ' + player.stamina + '</p><p>Force: ' + player.strenght + '</p><p>Nom: '
+      + player.health + '</p><p class="stamina_player">Stamina: ' + player.stamina + '</p><p class="strenght_player">Force: ' + player.strenght + '</p><p>Nom: '
       + player.name + '</p><p>Gold: ' + player.money + '</p><p class="level_player">Niveau: ' + player.level + '</p></div>';
     }
     else if (sexe == "femme" || sexe == "femme") {
       player = new Player(100, 25, "Unknown_F", 10, 100, 40, 1);
       getDivPlayer.innerHTML = '<img src="img/femme.png" class="player_avatar"><div><p class="health_player">Hp: '
-      + player.health + '</p><p>Stamina: ' + player.stamina + '</p><p>Force: ' + player.strenght + '</p><p>Nom: '
+      + player.health + '</p><p class="stamina_player">Stamina: ' + player.stamina + '</p><p class="strenght_player">Force: ' + player.strenght + '</p><p>Nom: '
       + player.name + '</p><p>Gold: ' + player.money + '</p><p class="level_player">Niveau: ' + player.level + '</p></div>';
     }
     else {
@@ -1046,13 +1046,37 @@ function  affichagePlayer() {
 /* Fonction pour restaurer ses points de vies à chaque grande étape du jeu
 (Remplace les potions de vies et rend le jeu "finissable")*/
 function restoration() {
+  let getPlayerHealth = document.querySelector('.health_player');
+  let getPlayerStamina = document.querySelector('.stamina_player');
   let restaurer = confirm("Vous avez changer de lieu, voulez-vous vous reposez un peu ? (Restaure vos Hp et votre stamina)");
-  if (restaurer) {
-    player.health = 100;
+  if (restaurer && player.name == "Unknown_M") {
+    player.health = 120;
+    getPlayerHealth.innerHTML = 'Hp: ' + player.health;
     player.stamina = 100;
+    getPlayerStamina.innerHTML = 'Stamina: ' + player.stamina;
+  }
+  else if (restaurer && player.name == "Unknown_F") {
+    player.health = 100;
+    getPlayerHealth.innerHTML = 'Hp: ' + player.health;
+    player.stamina = 100;
+    getPlayerStamina.innerHTML = 'Stamina: ' + player.stamina;
   }
 }
 
+function boost(index) {
+  let getPlayerStrenght = document.querySelector('.strenght_player');
+  let getPlayerHealth = document.querySelector('.health_player');
+  if (index == 1) {
+    player.strenght += 30;
+    getPlayerStrenght.innerHTML = 'Force: ' + player.strenght;
+    alert("Vous avez choisi l'épée : vous gagnez 30 de force.");
+  }
+  else if (index == 2) {
+    player.health += 60;
+    getPlayerHealth.innerHTML = 'Hp: ' + player.health;
+    alert("Vous avez choisi l'armure : vous gagnez 60 Hp maximum.");
+  }
+}
 //Changement du décor
 function decor(indexDecor) {
   if (indexDecor == 1) {
@@ -1207,6 +1231,7 @@ function afterCombat(name) {
 }
 
 function gameOver(id) {
+  let elementsChoix = document.getElementById('choices');
   if (id == 1 && player.name == "Unknown_M") {
     alert("Les gobelins ne sont pas effrayés et vous mutilent...");
   }
@@ -1228,6 +1253,8 @@ function gameOver(id) {
   let over = document.getElementById('gameover');
   over.classList.remove("disabled");
   audio_death.play();
+  elementsChoix.innerHTML = '';
+
 }
 
 initGame();

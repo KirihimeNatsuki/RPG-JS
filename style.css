@@ -28,6 +28,12 @@ body {
 	background-color: #444343a1;
 }
 
+#gameover {
+	position: absolute;
+	left: 400px;
+	width: 50%;
+}
+
 .macro{
  display: flex;
 }
