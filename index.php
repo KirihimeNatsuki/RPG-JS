@@ -1,6 +1,6 @@
 <html lang="fr" dir="ltr">
   <head>
-    <title>...</title>
+    <title>PandoraSurge : Un RPG en JS</title>
     <meta description=''>
     <meta keywords=''>
     <script type="text/javascript" src="script.js"></script>

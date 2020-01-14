@@ -13,6 +13,9 @@ let jeu = document.querySelector('#jeu');
 let audio_death = new Audio('death.mp3');
 let ennemy;
 let player;
+// PV Max du joueur
+let maxHealthHomme = 120;
+let maxHealthFemme = 100;
 
 // Création des fonctions permettant l'affichage de l'histoire
 function showStoryLine(storyStepIndex) {
@@ -89,6 +92,15 @@ function showStoryLine(storyStepIndex) {
     else if (storyStepIndex == 26) {
       boost(2);
     }
+    else if (storyStepIndex == 45) {
+      decor(2);
+    }
+    else if (storyStepIndex == 47) {
+      decor(2);
+    }
+    else if (storyStepIndex == 48) {
+      decor(1);
+    }
     let histoire = document.getElementById('story');
     let elementsChoix = document.getElementById('choices');
     let storyStep = storyline.find(storyStep => storyStep.id === storyStepIndex);
@@ -162,7 +174,7 @@ const storyline = [
       },
       {
         text: 'Fuir',
-        nextScene: 5
+        nextScene: 3
       },
       {
         text: 'Repousser les gobelins avec le bouclier',
@@ -275,7 +287,7 @@ const storyline = [
   		},
   		{
   			text: 'Faire un genocide dans leur repaire',
-  			nextScene: -9
+  			nextScene: -8
   		},
   	]
   },
@@ -520,20 +532,6 @@ const storyline = [
     ]
   },
   {
-    id: 27,
-    text: 'Vous êtes entré dans les terres ténébreuses. ("Roulement de tambours") Mais attendez n"est pas une succube que je vois derrière cette arbuste ?',
-    options: [
-      {
-        text: 'S"introduire dans le palais demoniaque',
-        nextScene: 30
-      },
-      {
-        text: 'Suivre la succube',
-        nextScene: 31
-      },
-    ]
-  },
-  {
     id: 28,
     text: 'Vous ouvrez le grimoire et... Vous retrouvez une partie de vos souvenirs... Vous vous souvenez que vous êtes un ancien aventurier de rang argent et que... Arf vous vous souvenez que de ça. Vous apercevez une succube au loin après être entré dans les terres ténébreuses.',
     options: [
@@ -723,11 +721,11 @@ const storyline = [
   },
   {
     id: 42,
-    text: 'Au moment de l"éxécution le Roi gobelin vous surnomme "Mahesvara", la voix vous indique que cela signifie "Destructeur de gobelin". Souriant vous trancher la tête du Roi.',
+    text: 'Au moment de l"éxécution le Roi gobelin vous surnomme "Mahesvara", la voix vous indique que cela signifie "Destructeur de gobelin". Souriant vous trancher la tête du Roi, puis vous regardez en direction de votre seconde moitié',
     options: [
       {
         text: 'Sauver votre seconde moitié et retourner en ville',
-        nextScene: 45
+        nextScene: 48
       },
     ]
   },
@@ -747,11 +745,11 @@ const storyline = [
   },
   {
     id: 44,
-    text: 'Vous comprenez qui vous êtes avec les éléments trouvés lors de votre périple, vous êtes Goblin Slayer un aventurier de rang argent que tout gobelin redoute dans ce monde ! Pendant ce temps de réfléxion vous vous rendez compte que votre seconde moitié est devant vous...',
+    text: 'Vous comprenez qui vous êtes avec les éléments trouvés lors de votre périple, vous êtes Goblin Slayer un aventurier de rang argent que tout gobelin redoute dans ce monde ! Pendant ce temps de réfléxion vous vous rendez compte que votre seconde moitié est devant vous les larmes aux yeux...',
     options: [
       {
         text: 'Partir avec elle et retourner en ville',
-        nextScene: 45
+        nextScene: 48
       },
     ]
   },
@@ -769,7 +767,7 @@ const storyline = [
   },
   {
     id: 46,
-    text: 'Vous apprenez de la voix dans votre tête et de votre seconde moitié (votre soeur), que vous êtes Goblin Slayer un aventurier de rang argent que tout gobelin redoute dans ce monde ! La voix finie par disparaître. ',
+    text: 'Vous apprenez de la voix dans votre tête que vous êtes Goblin Slayer un aventurier de rang argent que tout gobelin redoute dans ce monde ! La voix finie par disparaître. ',
     options: [
       {
         text: 'Retourner en ville ensemble.',
@@ -791,7 +789,7 @@ const storyline = [
   },
   {
     id: 48,
-    text: 'Vous rentrez en ville sain et sauf avec votre soeur. Vous vivez des moments heureux et vous repartez ensemble à l"aventure ',
+    text: 'Vous rentrez en ville sain et sauf avec votre seconde moitié qui n"est d"autre que votre soeur. Vous vivez des moments heureux et vous repartez ensemble à l"aventure ',
     options: [
       {
         text: 'HAPPY ENDING (Avec les applaudissements du narrateur)'
@@ -921,33 +919,58 @@ function Ennemy(name, health, strenght, money, speed){
   this.speed = speed;
 }
 
-function combat() {
+function combat(optionCombat) {
+    let typeAttack = optionCombat;
     // Qui va attaquer le premier ?
     let getPlayerSpeed = player.speed;
     let getEnnemySpeed = ennemy.speed;
     // Récupération de plusieurs statistiques pour l'actualisation de celles-ci pendant le combat
     let getEnnemyName = ennemy.name;
+    let getPlayerStamina = document.querySelector('.stamina_player');
+    let getPlayerMana = document.querySelector('.mana_player');
     let getPlayerLevel = document.querySelector('.level_player');
     let getPlayerHealth = document.querySelector('.health_player');
+    let getPlayerGold = document.querySelector('.gold_player');
     let getEnnemyHealth = document.querySelector('.health_ennemy');
 
+
     // Attaque des monstres
-    let ennemyDamage = ennemy.strenght + Math.floor(Math.random(1, 3));
+    let ennemyDamage = ennemy.strenght + Math.floor(Math.random() * (4 - 1 +1)) + 1;
     // Attaque du joueur
-    let baseDamage;
-    if (player.stamina > 0 /*&& optionCombat == true*/) {
+    let baseDamage = player.strenght;
+    // Dégâts supplémentaires pour effet random
+    let suppDamage = Math.floor(Math.random() * (7 - 1 +1)) + 1;
+    if (player.stamina > 0 && typeAttack == 1) { // Attaque de base : n'utilise pas de stamina
       baseDamage = player.strenght;
     }
-    else if (player.stamina > 0 /*&& optionCombat2 == true*/) { // Attaque spéciale non implémentée !
-      baseDamage = player.strenght * 3;
-      player.stamina -= 20;
+    else if (player.stamina >= 40 && optionCombat == 2) { // Attaque spéciale : plus de puissance mais utilise beaucoup de stamina !
+      baseDamage = player.strenght * 2;
+      player.stamina -= 40;
+    }
+    else if (player.mana > 0 && optionCombat == 3) { // Soin : utilisable qu'une seule fois par combat pour le héros masculin et deux fois pour la femme!
+      player.health += 60;
+      player.mana -= 100;
+      baseDamage = 0;
+      suppDamage = 0;
+      if (player.health > maxHealthHomme && player.name == "Unknown_M") {
+        player.health = maxHealthHomme;
+      }
+      else if (player.health > maxHealthFemme && player.name == "Unknown_F") {
+        player.health = maxHealthFemme;
+      }
     }
     else {
-      baseDamage = player.strenght;
+      if (optionCombat == 3 && player.mana <= 0) {
+        alert("Vous êtes à court de mana, vous lancez une attaque normale !");
+        baseDamage = player.strenght;
+      }
+      if (optionCombat == 2 && player.stamina < 40) {
+        alert("Vous êtes épuisé, vous lancez une attaque normale !");
+        baseDamage = player.strenght;
+      }
     }
-    let suppDamage = Math.floor(Math.random(1, 3));
     let trueDamage = baseDamage + suppDamage;
-    let hitCount = Math.floor(Math.random() * Math.floor(player.speed / 10) / 2) + 1;
+    let hitCount = Math.floor(Math.random() * Math.floor(player.speed / 10)) + 1;
     let attackEtapes = [trueDamage, hitCount];
 
 
@@ -955,21 +978,28 @@ function combat() {
     if (getPlayerSpeed >= getEnnemySpeed) {
       let playerDamage = attackEtapes[0] * attackEtapes[1];
       ennemy.health = ennemy.health - playerDamage;
-      alert("Vous avez touché  " + ennemy.name + attackEtapes[1] + " fois avec " + attackEtapes[0] + " de degats");
+      alert("Vous avez touché  " + ennemy.name + " " + attackEtapes[1] + " fois avec " + attackEtapes[0] + " de degats");
       if (ennemy.health <= 0) {
-        alert("Vous avez gagné , vous gagnez un niveau !");
+        alert("Vous avez gagné , vous gagnez un niveau ! Votre mana est se régénère.");
         player.level += 1;
+        player.mana += 100;
+        getPlayerMana.innerHTML = 'Mana: ' + player.mana;
+        getPlayerStamina.innerHTML = 'Stamina: ' + player.stamina;
         getPlayerLevel.innerHTML = 'Niveau: ' + player.level;
         getPlayerHealth.innerHTML = 'Hp: ' + player.health;
         getEnnemyHealth.innerHTML = 'Hp: 0';
+        player.money = player.money + ennemy.money;
+        getPlayerGold.innerHTML = 'Gold: ' + player.money;
         afterCombat(getEnnemyName);
       }
       else {
+        getPlayerMana.innerHTML = 'Mana: ' + player.mana;
+        getPlayerStamina.innerHTML = 'Stamina: ' + player.stamina;
         getEnnemyHealth.innerHTML = 'Health ' + ennemy.health;
         // Au tour du monstre d'attaquer
         let ennemyStrike = ennemyDamage;
         player.health = player.health - ennemyStrike;
-        alert("Vous avez subit " + ennemyStrike + " de degats");
+        alert("Vous avez subit " + ennemyStrike + " de dégâts de " + ennemy.name);
         if (player.health <= 0) {
           alert("Vous avez perdu , vous êtes mort !");
           getPlayerHealth.innerHTML = 'Hp: 0';
@@ -983,7 +1013,7 @@ function combat() {
     } else if (getEnnemySpeed >= getPlayerSpeed) {
       let ennemyStrike = ennemyDamage;
       player.health = player.health - ennemyStrike;
-      alert("Vous avez subit " + ennemyStrike + " de degats");
+      alert("Vous avez subit " + ennemyStrike + " de dégâts de " + ennemy.name);
       if (player.health <= 0) {
         alert("Vous avez perdu , vous êtes mort !");
         getPlayerHealth.innerHTML = 'Hp: 0';
@@ -991,19 +1021,26 @@ function combat() {
         gameOver();
       }
       else {
-        let attackEtapes = playerStrike();
+        getPlayerHealth.innerHTML = 'Hp: ' + player.health;
         let playerDamage = attackEtapes[0] * attackEtapes[1];
         ennemy.health = ennemy.health - playerDamage;
-        alert("Vous avez touché  " + ennemy.name + attackEtapes[1] + " fois avec " + attackEtapes[0] + " de degats");
+        alert("Vous avez touché  " + ennemy.name + " " + attackEtapes[1] + " fois avec " + attackEtapes[0] + " de degats");
         if (ennemy.health <= 0) {
-          alert("Vous avez gagné , vous gagnez un niveau !");
+          alert("Vous avez gagné , vous gagnez un niveau ! Votre mana est se régénère.");
           player.level += 1;
+          player.mana += 100;
           getPlayerLevel.innerHTML = 'Niveau: ' + player.level;
+          getPlayerMana.innerHTML = 'Mana: ' + player.mana;
+          getPlayerStamina.innerHTML = 'Stamina: ' + player.stamina;
           getPlayerHealth.innerHTML = 'Hp: ' + player.health;
           getEnnemyHealth.innerHTML = 'Hp: 0';
+          player.money = player.money + ennemy.money;
+          getPlayerGold.innerHTML = 'Gold: ' + player.money;
           afterCombat(getEnnemyName);
         }
         else {
+          getPlayerMana.innerHTML = 'Mana: ' + player.mana;
+          getPlayerStamina.innerHTML = 'Stamina: ' + player.stamina;
           getEnnemyHealth.innerHTML = 'Hp: ' + ennemy.health;
         }
       }
@@ -1011,12 +1048,13 @@ function combat() {
 }
 
 //Création de la fonction joueur qui peut être également une classe
-function Player(health, strenght, name, money, stamina, speed, level){
+function Player(health, strenght, name, money, stamina, mana, speed, level){
   this.health = health;
   this.strenght = strenght;
   this.name = name;
   this.money = money;
-  this.stamina = stamina
+  this.stamina = stamina;
+  this.mana = mana;
   this.speed = speed;
   this.level = level;
 }
@@ -1027,16 +1065,16 @@ function  affichagePlayer() {
     let getDivPlayer = document.querySelector('.playerStats');
     let sexe = prompt("Etes vous un homme ou une femme ?");
     if (sexe == "homme" || sexe == "Homme"){
-      player = new Player(120, 32, "Unknown_M", 10, 100, 20, 1);
+      player = new Player(120, 28, "Unknown_M", 10, 100, 100, 20, 1);
       getDivPlayer.innerHTML = '<img src="img/homme.png" class="player_avatar"><div><p class="health_player">Hp: '
-      + player.health + '</p><p class="stamina_player">Stamina: ' + player.stamina + '</p><p class="strenght_player">Force: ' + player.strenght + '</p><p>Nom: '
-      + player.name + '</p><p>Gold: ' + player.money + '</p><p class="level_player">Niveau: ' + player.level + '</p></div>';
+      + player.health + '</p><p class="stamina_player">Stamina: ' + player.stamina + '</p><p class="mana_player">Stamina: ' + player.mana + '</p><p class="strenght_player">Force: ' + player.strenght + '</p><p>Nom: '
+      + player.name + '</p><p class="gold_player">Gold: ' + player.money + '</p><p class="level_player">Niveau: ' + player.level + '</p></div>';
     }
     else if (sexe == "femme" || sexe == "femme") {
-      player = new Player(100, 25, "Unknown_F", 10, 100, 40, 1);
+      player = new Player(100, 20, "Unknown_F", 10, 120, 200, 40, 1);
       getDivPlayer.innerHTML = '<img src="img/femme.png" class="player_avatar"><div><p class="health_player">Hp: '
-      + player.health + '</p><p class="stamina_player">Stamina: ' + player.stamina + '</p><p class="strenght_player">Force: ' + player.strenght + '</p><p>Nom: '
-      + player.name + '</p><p>Gold: ' + player.money + '</p><p class="level_player">Niveau: ' + player.level + '</p></div>';
+      + player.health + '</p><p class="stamina_player">Stamina: ' + player.stamina + '</p><p class="mana_player">Stamina: ' + player.mana + '</p><p class="strenght_player">Force: ' + player.strenght + '</p><p>Nom: '
+      + player.name + '</p><p class="gold_player">Gold: ' + player.money + '</p><p class="level_player">Niveau: ' + player.level + '</p></div>';
     }
     else {
       affichagePlayer();
@@ -1050,29 +1088,53 @@ function restoration() {
   let getPlayerStamina = document.querySelector('.stamina_player');
   let restaurer = confirm("Vous avez changer de lieu, voulez-vous vous reposez un peu ? (Restaure vos Hp et votre stamina)");
   if (restaurer && player.name == "Unknown_M") {
-    player.health = 120;
-    getPlayerHealth.innerHTML = 'Hp: ' + player.health;
-    player.stamina = 100;
-    getPlayerStamina.innerHTML = 'Stamina: ' + player.stamina;
+    if (maxHealthHomme > 120) {
+      player.health = 160;
+      getPlayerHealth.innerHTML = 'Hp: ' + player.health;
+      player.stamina = 100;
+      getPlayerStamina.innerHTML = 'Stamina: ' + player.stamina;
+    }
+    else {
+      player.health = 120;
+      getPlayerHealth.innerHTML = 'Hp: ' + player.health;
+      player.stamina = 100;
+      getPlayerStamina.innerHTML = 'Stamina: ' + player.stamina;
+    }
   }
   else if (restaurer && player.name == "Unknown_F") {
-    player.health = 100;
-    getPlayerHealth.innerHTML = 'Hp: ' + player.health;
-    player.stamina = 100;
-    getPlayerStamina.innerHTML = 'Stamina: ' + player.stamina;
+    if (maxHealthFemme > 100) {
+      player.health = 140;
+      getPlayerHealth.innerHTML = 'Hp: ' + player.health;
+      player.stamina = 120;
+      getPlayerStamina.innerHTML = 'Stamina: ' + player.stamina;
+    }
+    else {
+      player.health = 100;
+      getPlayerHealth.innerHTML = 'Hp: ' + player.health;
+      player.stamina = 120;
+      getPlayerStamina.innerHTML = 'Stamina: ' + player.stamina;
+    }
   }
 }
 
+/* Fonction correspondant à la partie du jeu où le joueur va à l'armurerie royale afin
+de choisir un nouvel équipement*/
 function boost(index) {
   let getPlayerStrenght = document.querySelector('.strenght_player');
   let getPlayerHealth = document.querySelector('.health_player');
   if (index == 1) {
-    player.strenght += 30;
+    player.strenght += 15;
     getPlayerStrenght.innerHTML = 'Force: ' + player.strenght;
-    alert("Vous avez choisi l'épée : vous gagnez 30 de force.");
+    alert("Vous avez choisi l'épée : vous gagnez 15 de force.");
   }
   else if (index == 2) {
-    player.health += 60;
+    if (player.name == "Unknown_M") {
+      maxHealthHomme += 40;
+    }
+    else if (player.name == "Unknown_F") {
+      maxHealthFemme += 40;
+    }
+    player.health += 40;
     getPlayerHealth.innerHTML = 'Hp: ' + player.health;
     alert("Vous avez choisi l'armure : vous gagnez 60 Hp maximum.");
   }
@@ -1099,7 +1161,7 @@ function decor(indexDecor) {
 function interfaceCombat() {
   let getZoneCombat = document.querySelector('.combat');
   let getEnnemy = document.querySelector('.ennemy');
-  getZoneCombat.innerHTML  += '<a href="#" class="prefight" onclick="combat()"> Attaquer !</a>';
+  getZoneCombat.innerHTML  += '<a href="#" class="prefight" onclick="combat(1)"> Attaquer !</a><a href="#" class="prefight" onclick="combat(2)"> Spécial !</a><a href="#" class="prefight" onclick="combat(3)"> Soin !</a>';
   getEnnemy.innerHTML += '<div><h3>' + ennemy.name + '</h3><p class="health_ennemy">Health: '
   + ennemy.health + '</p><p>Strenght: ' + ennemy.strenght + '</p></div>';
 }
@@ -1153,12 +1215,12 @@ function zoneCombat(numCombat) {
       combat();
       break;
     case 7:
-      ennemy = ennemyChampion;
+      ennemy = ennemyGoblins;
       interfaceCombat();
       combat();
       break;
     case 8:
-      ennemy = ennemyGoblins;
+      ennemy = ennemyChampion;
       interfaceCombat();
       combat();
       break;

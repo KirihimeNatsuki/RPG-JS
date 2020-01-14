@@ -38,6 +38,13 @@ body {
  display: flex;
 }
 
+.ennemy {
+	margin: 10 0 0 440px;
+	font-family: "horreur";
+  font-style: normal;
+  font-size: 26;
+}
+
 .disabled {
   visibility: hidden;
   display: contents;
@@ -52,6 +59,39 @@ body {
   font-family: "horreur";
   font-style: normal;
   font-size: 32;
+}
+
+.prefight{
+    top: 140px;
+    left: 225px;
+    padding:20px 60px;
+    margin: 10px 10px;
+    display: grid;
+    text-decoration:none;
+    font-weight: 500;
+    font-size: 28px;
+		font-family: "BloodLust";
+		font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #ffffff;
+    cursor: hand;
+    text-align: center;
+    text-transform: capitalize;
+    border-radius:0px;
+    position: relative;
+    overflow: hidden;
+    -webkit-transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+    -o-transition: all .3s ease-in-out;
+    transition: all .3s ease-in-out;
+    background: transparent;
+}
+
+
+.prefight:hover{
+    border: 1px solid #transparent;
+	  color: darkred;
 }
 
 .playerStats{
